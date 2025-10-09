@@ -2,6 +2,18 @@
 TripPocket – keep trips in your “pocket” for later.
 
 
+#### Favicon
+
+- A favicon in the browser tab.
+
+  ![favicon](assets/favicon/favicon.png)
+
+#### Web APP LOGO
+
+- A Logo.
+
+  ![logo](assets/logo/logo.png)
+
 
 ### Colour Scheme
 
@@ -17,7 +29,6 @@ Here is the color scheme for the project:
 - **Light cyan**: `#CAF0F8`
 
  
-
-![POCKETTRIP](assets/color-scheme/pocket-trip.png)
+![POCKETTRIP](assets/colorscheme/ocean-blue-serenity.png)
 Resource
 https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8f4-caf0f8
