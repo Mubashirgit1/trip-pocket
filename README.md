@@ -70,3 +70,17 @@ https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8
 ![Trip Pocket Architecture Diagram](assets/flowchart/Flowchart.png)
 
 
+## 🧱 Entity Relationship Diagram (ERD)
+
+### 📊 ERD Overview
+
+- **User**: Stores personal details such as name, email, phone, and location info.  
+- **Trip**: Connected to the User model via `user_id`. Contains trip details, images, flights, restaurants, and weather data.  
+- **External APIs**:
+  - **GEO DB API** → Provides city and country info  
+  - **Unsplash API** → Retrieves destination images  
+  - **Travel Advisor API** → Fetches restaurants and hotels  
+  - **Aviation Stack API** → Flight details  
+  - **OpenWeatherMap API** → Real-time weather  
+
+![Trip Pocket ERD](assets/erd-diagram/erd-diagram.png)
