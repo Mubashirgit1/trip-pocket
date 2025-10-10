@@ -68,3 +68,5 @@ https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8
 ## 🧩 System Architecture
 
 ![Trip Pocket Architecture Diagram](assets/flowchart/Flowchart.png)
+
+
