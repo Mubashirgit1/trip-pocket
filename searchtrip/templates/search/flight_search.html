@@ -59,37 +59,6 @@
 <button>Search Flights</button>
 
   <script>
-    // const input = document.getElementById('cityInput');
-    // const list = document.getElementById('suggestions');
-    // const selected = document.getElementById('selectedCity');
-
-    // let timeout = null;
-
-    // input.addEventListener('input', () => {
-    //   clearTimeout(timeout);
-    //   const query = input.value.trim();
-    //   if (!query) {
-    //     list.innerHTML = '';
-    //     return;
-    //   }
-
-    //   timeout = setTimeout(async () => {
-    //     const res = await fetch(`/searchtrip/autocomplete/?q=${query}`);
-    //     const data = await res.json();
-
-    //     list.innerHTML = data.map(c => `
-    //       <li onclick="selectCity('${c.name}, ${c.country}', '${c.id}')">
-    //         ${c.name}, ${c.country}
-    //       </li>
-    //     `).join('');
-    //   }, 300); // wait 0.3s after typing stops
-    // });
-
-    // function selectCity(cityName, cityId) {
-    //   input.value = cityName;
-    //   selected.textContent = `${cityName} (ID: ${cityId})`;
-    //   list.innerHTML = ''; // hide list
-    // }
 
     const dep_input = document.getElementById("dep_Input");
     const dep_airport = document.getElementById("dep_airport");
@@ -105,21 +74,17 @@
       const arrCode = arr_airport.value;
       const depDate = dep_date.value; // format: YYYY-MM-DD
       const returnDate = arr_date.value; // optional
+      const adults = 1;
+      const children = "4,12"; 
 
       if (!depCode || !arrCode || !depDate) {
         alert("Please select departure, arrival airports and departure date!");
         return;
       }
+  const flights = await fetchFlights(depCode, arrCode, depDate, returnDate, adults, children);
 
-      const flights = await searchFlights(depCode, arrCode, depDate, returnDate);
-
-      resultsDiv.innerHTML = flights.map(f => `
-        <div>
-          <strong>${f.airline.name}</strong> | Flight: ${f.flight.number} <br>
-          Departure: ${f.departure.scheduled} | Arrival: ${f.arrival.scheduled}
-        </div>
-        <hr>
-      `).join('');
+     console.log(flights);
+     alert("Check console for flight results");
     });
 
 
@@ -173,28 +138,24 @@
       }
     }
 
-async function searchFlights(depCode, arrCode) {
-  const apiKey = "3f88e0d108ac3d99c2b38f240ddc3f67"; // replace with your key
+    async function fetchFlights(depCode, arrCode, depDate, returnDate, adults, children) {
+    const params = new URLSearchParams({
+        dep: depCode,
+        arr: arrCode,
+        dep_date: depDate,
+        return_date: returnDate || "",
+        adults: adults,
+        children: children,
+        cabin_class: "PREMIUM_ECONOMY"
+    });
 
-  try {
-    const response = await fetch(
-      `http://api.aviationstack.com/v1/flights?access_key=${apiKey}&dep_iata=${depCode}&arr_iata=${arrCode}`
-    );
+    const res = await fetch(`/searchtrip/search-flights/?${params.toString()}`);
+    const data = await res.json();
 
-    const data = await response.json();
-
-    if (!data.data || data.data.length === 0) {
-      alert("No flights found for this route.");
-      return [];
+    console.log(data);
+    return data;
     }
 
-    return data.data; // array of flights
-  } catch (error) {
-    console.error("Error fetching flights:", error);
-    alert("Error fetching flights. Check console.");
-    return [];
-  }
-}
 
   </script>
 </body>
