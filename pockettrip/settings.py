@@ -29,9 +29,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-
+RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
+OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY")
+AVIATIONSTACK_API_KEY = os.environ.get("AVIATIONSTACK_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

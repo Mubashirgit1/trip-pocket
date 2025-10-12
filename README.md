@@ -84,3 +84,43 @@ https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8
   - **OpenWeatherMap API** → Real-time weather  
 
 ![Trip Pocket ERD](assets/erd-diagram/erd-diagram.png)
+
+### Frameworks, Libraries & Programs Used
+
+- [balsamiq](https://www.balsamiq.com/design) - Used to create wireframes.
+
+- [Git](https://git-scm.com/) - For version control.
+
+- [Github](https://github.com/) - To save and store the files for the website.
+
+- [Chat GPT](https://chatgpt.com/) - Creating my slider Images amd help for content writing.
+
+- [Font Awesome](https://fonts.google.com/) - To import the fonts used on the website.
+
+- [jQuery](https://jquery.com/) - A JavaScript library.
+
+- [Google Developer Tools](https://developers.google.com/web/tools) - To troubleshoot and test features, solve issues with responsiveness and styling.
+
+- [TinyPNG](https://tinypng.com/) To compress images
+
+- [Birme](https://www.birme.net/) To resize images and convert to webp format.
+
+- [Favicon.io](https://favicon.io/) To create favicon.
+
+- [Am I Responsive?](http://ami.responsivedesign.is/) To show the website image on a range of devices.
+
+- [Shields.io](https://shields.io/) To add badges to the README
+
+- [JSON Formatter](https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa) - a google chrome extension to enable you to view JSON as raw data or parsed.
+
+- [Webpage Spell-Check](https://chrome.google.com/webstore/detail/webpage-spell-check/mgdhaoimpabdhmacaclbbjddhngchjik/related) - a google chrome extension that allows you to spell check your webpage. Used to check the site and the readme for spelling errors.
+
+- [All Auth](https://docs.allauth.org/en/latest/) to configure User Authentication
+
+- [gunicorn](https://shields.io/) for deployment 
+
+- [Whitenose](https://shields.io/) for handling static files
+
+- [psychopg2](https://shields.io/) for Databse connection
+
+- [Django](https://shields.io/) Python Framework

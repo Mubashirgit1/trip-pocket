@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>City Selector</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    input { width: 300px; padding: 8px; }
+    ul {
+      border: 1px solid #ccc;
+      max-width: 300px;
+      list-style: none;
+      padding: 0;
+      margin-top: 0;
+      position: absolute;
+      background: white;
+      z-index: 100;
+    }
+    li {
+      padding: 8px;
+      cursor: pointer;
+    }
+    li:hover {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h2>Search for a City</h2>
+  <input type="text" id="cityInput" placeholder="Start typing a city...">
+  <ul id="suggestions"></ul>
+ 
+ <br><br>
+
+  <label for="airport">Select Airport:</label>
+  <select id="airport">
+    <option value="">-- Select Airport --</option>
+  </select>
+  <script>
+    const input = document.getElementById('cityInput');
+    const list = document.getElementById('suggestions');
+    const selected = document.getElementById('selectedCity');
+
+    let timeout = null;
+
+    // input.addEventListener('input', () => {
+    //   clearTimeout(timeout);
+    //   const query = input.value.trim();
+    //   if (!query) {
+    //     list.innerHTML = '';
+    //     return;
+    //   }
+
+    //   timeout = setTimeout(async () => {
+    //     const res = await fetch(`/searchtrip/autocomplete/?q=${query}`);
+    //     const data = await res.json();
+
+    //     list.innerHTML = data.map(c => `
+    //       <li onclick="selectCity('${c.name}, ${c.country}', '${c.id}')">
+    //         ${c.name}, ${c.country}
+    //       </li>
+    //     `).join('');
+    //   }, 300); // wait 0.3s after typing stops
+    // });
+
+    // function selectCity(cityName, cityId) {
+    //   input.value = cityName;
+    //   selected.textContent = `${cityName} (ID: ${cityId})`;
+    //   list.innerHTML = ''; // hide list
+    // }
+
+    const cityInput = document.getElementById("cityInput");
+    const airportSelect = document.getElementById("airport");
+    let typingTimer;
+    const typingDelay = 600; // wait 600ms after typing stops
+
+    cityInput.addEventListener("keyup", () => {
+      var city = cityInput.value.trim();
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(() => fetchAirports(city), typingDelay);
+    });
+
+    async function fetchAirports(city) {
+     
+       if (!airportSelect) return; 
+      if (!city) {
+        airportSelect.innerHTML = '<option>-- Type a city name first --</option>';
+        return;
+      }
+
+      airportSelect.innerHTML = '<option>Loading airports...</option>';
+
+      try {
+        const response = await fetch(`/searchtrip/get-airports/?city=${encodeURIComponent(city)}`);
+        const data = await response.json();
+
+        airportSelect.innerHTML = "";
+        if (data.airports && data.airports.length > 0) {
+          data.airports.forEach(airport => {
+            const option = document.createElement("option");
+            option.value = airport.code;
+            option.textContent = `${airport.name} (${airport.code})`;
+            airportSelect.appendChild(option);
+          });
+        }  else {
+          // ✅ Use safe fallback
+          const option = document.createElement("option");
+          option.textContent = "No airports found";
+          airportSelect.appendChild(option);
+        }
+      } catch (error) {
+        console.error("Error fetching airports:", error);
+        airportSelect.innerHTML = '<option>Error fetching data</option>';
+      }
+    }
+  </script>
+</body>
+</html>
