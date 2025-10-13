@@ -115,7 +115,7 @@
       airportSelect.innerHTML = '<option>Loading airports...</option>';
 
       try {
-        const response = await fetch(`/searchtrip/get-airports/?city=${encodeURIComponent(city)}`);
+        const response = await fetch(`/get-airports/?city=${encodeURIComponent(city)}`);
         const data = await response.json();
 
         airportSelect.innerHTML = "";
@@ -149,7 +149,7 @@
         cabin_class: "PREMIUM_ECONOMY"
     });
 
-    const res = await fetch(`/searchtrip/search-flights/?${params.toString()}`);
+    const res = await fetch(`/search-flights/?${params.toString()}`);
     const data = await res.json();
 
 const container = document.getElementById('flightsContainer');

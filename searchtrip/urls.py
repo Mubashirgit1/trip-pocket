@@ -4,6 +4,7 @@ from .views import search_cities, my_trip, city_selector_page, get_weather,fligh
 urlpatterns = [
     path("autocomplete/", search_cities, name="city_autocomplete"),
     path('trip/', my_trip, name='trip'),        
+    path('', my_trip, name='trip'),        
     path("select/", city_selector_page, name="city_selector"),
     path("weather/", get_weather, name="get_weather"),
     path("flights/", flight_search, name="flight_search"),
