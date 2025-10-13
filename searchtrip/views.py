@@ -56,8 +56,10 @@ def get_airports_by_city(request):
         return JsonResponse({"error": "Missing city parameter"}, status=400)
 
     url = "https://booking-com-api5.p.rapidapi.com/flight/find-airport"
+    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")  # store your key in .env
+
     headers = {
-        "x-rapidapi-key": "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438",
+        "x-rapidapi-key": api_key,
         "x-rapidapi-host": "booking-com-api5.p.rapidapi.com"
     }
     params = {"query": query, "languagecode": "en"}
@@ -120,7 +122,7 @@ def search_flights(request):
     #     "date": dep_date if not return_date else f"{dep_date},{return_date}"
     # }
 
-    querystring = {"languagecode":"en","children":"4,12","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":"2025-12-30","from":dep_code,"to":arr_code,"currency":"GBP"}
+    querystring = {"languagecode":"en","children":"","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":return_date,"from":dep_code,"to":arr_code,"currency":"GBP"}
     headers = {
         "X-RapidAPI-Key": "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438",
         "X-RapidAPI-Host": "booking-com-api5.p.rapidapi.com"

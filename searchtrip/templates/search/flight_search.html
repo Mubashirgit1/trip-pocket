@@ -183,8 +183,7 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
         segmentDiv.innerHTML = `
           
           
-          <p><strong>From:</strong> ${segment.departureAirport.name} (${segment.departureAirport.code}) <strong>To:</strong> ${segment.arrivalAirport.name} (${segment.arrivalAirport.code})</p>
-
+         
           
         `;
 
@@ -198,6 +197,7 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
             <img src="${carrier?.logo || ''}" alt="${carrier?.name || carrier?.code}" width="50" height="50" />
             <p><strong>${carrier?.name || 'Unknown Airline'}</strong> (${carrier?.code})</p>
           </div>
+           <p><strong>From:</strong> ${leg.departureAirport.name} (${leg.departureAirport.code}) <strong>To:</strong> ${leg.arrivalAirport.name} (${leg.arrivalAirport.code})</p>
           <p><strong>Departure:</strong> ${leg.departureTime} <strong>Arrival:</strong> ${leg.arrivalTime}</p>
             <p><strong>Flight Number:</strong> ${leg.flightInfo.flightNumber}</p>
             <p><strong>Cabin Class:</strong> ${leg.cabinClass}</p>
