@@ -5,11 +5,11 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 
 
-def my_trip(request):
+def home(request):
     return render(request, "search/index.html")
 # Create your views here.
 
-def city_selector_page(request):
+def search_filter(request):
     return render(request, "search/flight_search.html")
 
 def search_cities(request):
@@ -97,6 +97,7 @@ def get_airports_by_city(request):
 
 
 def search_flights(request):
+    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")  # store your key in .env
 
     url = "https://booking-com-api5.p.rapidapi.com/flight/find-roundtrip"
 
@@ -109,22 +110,10 @@ def search_flights(request):
     children = request.GET.get("children", "")  # e.g., "4,12"
     cabin_class = request.GET.get("cabin_class", "ECONOMY")
 
-    # # Build query string for Booking.com API
-    # url = "https://booking-com-api5.p.rapidapi.com/flight/find-multistop"
-    # querystring = {
-    #     "from": dep_code,
-    #     "to": arr_code,
-    #     "page": "1",
-    #     "languagecode": "en",
-    #     "children": children,
-    #     "adults": str(adults),
-    #     "cabin_class": cabin_class,
-    #     "date": dep_date if not return_date else f"{dep_date},{return_date}"
-    # }
 
     querystring = {"languagecode":"en","children":"","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":return_date,"from":dep_code,"to":arr_code,"currency":"GBP"}
     headers = {
-        "X-RapidAPI-Key": "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438",
+        "X-RapidAPI-Key": api_key,
         "X-RapidAPI-Host": "booking-com-api5.p.rapidapi.com"
     }
 

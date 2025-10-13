@@ -1,198 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- index.html content starts here -->
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-  <title>City Selector</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    input { width: 300px; padding: 8px; }
-    ul {
-      border: 1px solid #ccc;
-      max-width: 300px;
-      list-style: none;
-      padding: 0;
-      margin-top: 0;
-      position: absolute;
-      background: white;
-      z-index: 100;
+
+<style>
+  .form-select {
+    border: 2px solid #007BFF;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .form-select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+  }
+
+  .form-label {
+    color: #007BFF;
+    font-weight: 600;
+  }
+</style>
+<div class="search-box">
+  <h2 class="text-center mb-4">✈️ Search Flights</h2>
+
+  <div class="row g-3">
+    <!-- Departure City -->
+    <div class="col-md-6">
+      <h2>Departure City</h2>
+      <input type="text" id="dep_Input" class="form-control" placeholder="Start typing a city...">
+      <ul id="dep_suggestions" class="suggestions"></ul>
+
+      <label for="dep_airport" class="form-label">Select Airport:</label>
+      <br>
+      <select id="dep_airport" class="form-control">
+        <option value="">-- Select Airport --</option>
+      </select>
+    </div>
+
+    <!-- Arrival City -->
+    <div class="col-md-6">
+      <h2>Arrival City</h2>
+      <input type="text" id="arr_Input" class="form-control" placeholder="Start typing a city...">
+      <ul id="arr_suggestions" class="suggestions"></ul>
+
+      <label for="arr_airport" class="form-label">Select Airport:</label>
+      <br>
+      <select id="arr_airport" class="form-control">
+        <option value="">-- Select Airport --</option>
+      </select>
+
+    </div>
+  </div>
+
+  <!-- Dates -->
+  <div class="row g-3 mt-3">
+    <div class="col-md-6">
+      <label for="dep_date" class="form-label">Departure Date:</label>
+      <input type="date" id="dep_date" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label for="arr_date" class="form-label">Return Date (optional):</label>
+      <input type="date" id="arr_date" class="form-control">
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="text-center mt-4">
+    <button id="searchBtn" class="btn btn-primary px-4">Search Flights</button>
+  </div>
+
+  <!-- Results -->
+  <div id="flightsContainer" class="mt-4"></div>
+</div>
+<script>
+
+  const dep_input = document.getElementById("dep_Input");
+  const dep_airport = document.getElementById("dep_airport");
+  const arr_Input = document.getElementById("arr_Input");
+  const arr_airport = document.getElementById("arr_airport");
+  const dep_date = document.getElementById("dep_date");
+  const arr_date = document.getElementById("arr_date");
+
+  const searchBtn = document.querySelector("button");
+
+  searchBtn.addEventListener("click", async () => {
+    const depCode = dep_airport.value;
+    const arrCode = arr_airport.value;
+    const depDate = dep_date.value; // format: YYYY-MM-DD
+    const returnDate = arr_date.value; // optional
+    const adults = 1;
+    const children = "4,12";
+
+    if (!depCode || !arrCode || !depDate) {
+      alert("Please select departure, arrival airports and departure date!");
+      return;
     }
-    li {
-      padding: 8px;
-      cursor: pointer;
+    const flights = await fetchFlights(depCode, arrCode, depDate, returnDate, adults, children);
+
+    console.log(flights);
+    alert("Check console for flight results");
+  });
+
+
+  let typingTimer;
+  const typingDelay = 600; // wait 600ms after typing stops
+
+  dep_input.addEventListener("keyup", () => {
+    var city = dep_input.value.trim();
+    var dep_airport = document.getElementById("dep_airport");
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => fetchAirports(city, dep_airport), typingDelay);
+  });
+  arr_Input.addEventListener("keyup", () => {
+    var city = arr_Input.value.trim();
+    var arr_airport = document.getElementById("arr_airport");
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => fetchAirports(city, arr_airport), typingDelay);
+  });
+
+  async function fetchAirports(city, airportSelect) {
+
+    if (!airportSelect) return;
+    if (!city) {
+      airportSelect.innerHTML = '<option>-- Type a city name first --</option>';
+      return;
     }
-    li:hover {
-      background-color: #eee;
-    }
-  </style>
-</head>
-<body>
-  
-  <h2>Search City for Departure</h2>
-  <input type="text" id="dep_Input" placeholder="Start typing a city...">
-  <ul id="suggestions"></ul>
- 
- <br><br>
 
-  <label for="dep_airport">Select Airport:</label>
-  <select id="dep_airport">
-    <option value="">-- Select Airport --</option>
-  </select>
+    airportSelect.innerHTML = '<option>Loading airports...</option>';
 
-  <h2>Search City Arrival</h2>
-  <input type="text" id="arr_Input" placeholder="Start typing a city...">
-  <ul id="suggestions"></ul>
- 
- <br><br>
+    try {
+      const response = await fetch(`/get-airports/?city=${encodeURIComponent(city)}`);
+      const data = await response.json();
 
-  <label for="arr_airport">Select Airport:</label>
-  <select id="arr_airport">
-    <option value="">-- Select Airport --</option>
-  </select>
-  <br><br>
-<label for="dep_date">Departure Date:</label>
-<input type="date" id="dep_date">
-
-<label for="arr_date">Return Date (optional):</label>
-<input type="date" id="arr_date">
-
-
-<button>Search Flights</button>
-<div id="flightsContainer"></div>
-  <script>
-
-    const dep_input = document.getElementById("dep_Input");
-    const dep_airport = document.getElementById("dep_airport");
-    const arr_Input = document.getElementById("arr_Input");
-    const arr_airport = document.getElementById("arr_airport");
-    const dep_date = document.getElementById("dep_date");
-    const arr_date = document.getElementById("arr_date");
-
-    const searchBtn = document.querySelector("button");
-
-    searchBtn.addEventListener("click", async () => {
-      const depCode = dep_airport.value;
-      const arrCode = arr_airport.value;
-      const depDate = dep_date.value; // format: YYYY-MM-DD
-      const returnDate = arr_date.value; // optional
-      const adults = 1;
-      const children = "4,12"; 
-
-      if (!depCode || !arrCode || !depDate) {
-        alert("Please select departure, arrival airports and departure date!");
-        return;
-      }
-  const flights = await fetchFlights(depCode, arrCode, depDate, returnDate, adults, children);
-
-     console.log(flights);
-     alert("Check console for flight results");
-    });
-
-
-    let typingTimer;
-    const typingDelay = 600; // wait 600ms after typing stops
-
-    dep_input.addEventListener("keyup", () => {
-      var city = dep_input.value.trim();
-      var dep_airport = document.getElementById("dep_airport");
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => fetchAirports(city,dep_airport), typingDelay);
-    });
-    arr_Input.addEventListener("keyup", () => {
-      var city = arr_Input.value.trim();
-      var arr_airport = document.getElementById("arr_airport");
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => fetchAirports(city,arr_airport), typingDelay);
-    });
-
-    async function fetchAirports(city,airportSelect) {
-     
-       if (!airportSelect) return; 
-      if (!city) {
-        airportSelect.innerHTML = '<option>-- Type a city name first --</option>';
-        return;
-      }
-
-      airportSelect.innerHTML = '<option>Loading airports...</option>';
-
-      try {
-        const response = await fetch(`/get-airports/?city=${encodeURIComponent(city)}`);
-        const data = await response.json();
-
-        airportSelect.innerHTML = "";
-        if (data.airports && data.airports.length > 0) {
-          data.airports.forEach(airport => {
-            const option = document.createElement("option");
-            option.value = airport.code;
-            option.textContent = `${airport.name} (${airport.code})`;
-            airportSelect.appendChild(option);
-          });
-        }  else {
-          // ✅ Use safe fallback
+      airportSelect.innerHTML = "";
+      if (data.airports && data.airports.length > 0) {
+        data.airports.forEach(airport => {
           const option = document.createElement("option");
-          option.textContent = "No airports found";
+          option.value = airport.code;
+          option.textContent = `${airport.name} (${airport.code})`;
           airportSelect.appendChild(option);
-        }
-      } catch (error) {
-        console.error("Error fetching airports:", error);
-        airportSelect.innerHTML = '<option>Error fetching data</option>';
+        });
+      } else {
+        // ✅ Use safe fallback
+        const option = document.createElement("option");
+        option.textContent = "No airports found";
+        airportSelect.appendChild(option);
       }
+    } catch (error) {
+      console.error("Error fetching airports:", error);
+      airportSelect.innerHTML = '<option>Error fetching data</option>';
     }
+  }
 
-    async function fetchFlights(depCode, arrCode, depDate, returnDate, adults, children) {
+  async function fetchFlights(depCode, arrCode, depDate, returnDate, adults, children) {
     const params = new URLSearchParams({
-        dep: depCode,
-        arr: arrCode,
-        dep_date: depDate,
-        return_date: returnDate || "",
-        adults: adults,
-        children: children,
-        cabin_class: "PREMIUM_ECONOMY"
+      dep: depCode,
+      arr: arrCode,
+      dep_date: depDate,
+      return_date: returnDate || "",
+      adults: adults,
+      children: children,
+      cabin_class: "PREMIUM_ECONOMY"
     });
 
     const res = await fetch(`/search-flights/?${params.toString()}`);
     const data = await res.json();
 
-const container = document.getElementById('flightsContainer');
-  container.innerHTML = ''; // clear existing content
+    const container = document.getElementById('flightsContainer');
+    container.innerHTML = ''; // clear existing content
 
+    if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
+      for (let offer of data.data.flightOffers) {
+        const price = offer.priceBreakdown.total;
+        const total = price.units + price.nanos / 1e9;
 
+        // Convert to GBP (assuming convertToGBP is async)
+        const priceGBP = await convertToGBP(total, price.currencyCode);
 
+        // Create offer div
+        const offerDiv = document.createElement('div');
+        offerDiv.classList.add('offer');
 
+        const priceEl = document.createElement('h2');
+        priceEl.textContent = `Price:(~£${priceGBP.toFixed(2)})`; // ${price.currencyCode} ${total.toFixed(2)} for orginal price 
+        offerDiv.appendChild(priceEl);
 
-if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
-    for (let offer of data.data.flightOffers) {
-      const price = offer.priceBreakdown.total;
-      const total = price.units + price.nanos / 1e9;
+        // Add segments
+        for (let segment of offer.segments) {
+          const segmentDiv = document.createElement('div');
+          segmentDiv.classList.add('segment');
 
-      // Convert to GBP (assuming convertToGBP is async)
-      const priceGBP = await convertToGBP(total, price.currencyCode);
+          segmentDiv.innerHTML = ``;
 
-      // Create offer div
-      const offerDiv = document.createElement('div');
-      offerDiv.classList.add('offer');
-
-      const priceEl = document.createElement('h2');
-      priceEl.textContent = `Price:(~£${priceGBP.toFixed(2)})`; // ${price.currencyCode} ${total.toFixed(2)} for orginal price 
-      offerDiv.appendChild(priceEl);
-
-      // Add segments
-      for (let segment of offer.segments) {
-        const segmentDiv = document.createElement('div');
-        segmentDiv.classList.add('segment');
-
-        segmentDiv.innerHTML = `
-          
-          
-         
-          
-        `;
-
-        // Add legs
-        for (let leg of segment.legs) {
-          const legDiv = document.createElement('div');
-          legDiv.classList.add('leg');
-          carrier = leg.carriersData[0]; // Assuming first carrier is primary
-          legDiv.innerHTML = `
+          // Add legs
+          for (let leg of segment.legs) {
+            const legDiv = document.createElement('div');
+            legDiv.classList.add('leg');
+            carrier = leg.carriersData[0]; // Assuming first carrier is primary
+            legDiv.innerHTML = `
           <div class="carrier">
             <img src="${carrier?.logo || ''}" alt="${carrier?.name || carrier?.code}" width="50" height="50" />
             <p><strong>${carrier?.name || 'Unknown Airline'}</strong> (${carrier?.code})</p>
@@ -206,106 +219,38 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
             <p><strong>Segment Time:</strong> ${secondsToHHMMSS(leg.totalTime)}</p>
           `;
 
-          segmentDiv.appendChild(legDiv);
+            segmentDiv.appendChild(legDiv);
+          }
+
+          offerDiv.appendChild(segmentDiv);
         }
 
-        offerDiv.appendChild(segmentDiv);
+        container.appendChild(offerDiv);
       }
-
-      container.appendChild(offerDiv);
+    } else {
+      container.textContent = 'No flight offers available.';
     }
-  } else {
-    container.textContent = 'No flight offers available.';
   }
-}
 
 
-function secondsToHHMMSS(seconds) {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-}
+  function secondsToHHMMSS(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
 
 
+  async function convertToGBP(amount, currencyCode) {
+    const response = await fetch(`https://v6.exchangerate-api.com/v6/581d6b20a6a4a3b9f8e716cf/pair/${currencyCode}/GBP`);
+    const data = await response.json();
+    console.log(data);
+    console.log(data.conversion_rate);
+    const rate = data.conversion_rate;
+    return amount * rate;
+  }
 
+</script>
 
-
-
-
-
-
-
-    
-    // if(data.data){
-    //   flightOffers = data.data.flightOffers
-    //    console.log(flightOffers)
-    //   if (flightOffers && flightOffers.length > 0) {
-    //     for (let offer of flightOffers) {
-    //       console.log(offer.priceBreakdown.total)
-    //       const price = offer.priceBreakdown.total;
-    //       const total = price.units + price.nanos / 1e9;
-    //       console.log(`${price.currencyCode} ${total.toFixed(2)}`);
-    //       const priceGBP = await convertToGBP(total.toFixed(2),price.currencyCode);
-    //           flightprice = priceGBP.toFixed(2);
-    //           console.log(flightprice);
-    //           console.log(priceGBP);
-
-    //       for (let segment of offer.segments) {
-    //         console.log(segment)
-    //         console.log(segment.totalTime)
-    //         console.log(segment.arrivalTime)
-    //         console.log(segment.departureTime)
-    //         console.log(segment.departureAirport)
-    //         console.log(segment.arrivalAirport)
-            
-    //         for (let leg of segment.legs) {
-    //           console.log(leg)
-    //           console.log(leg.cabinClass)
-    //           console.log(leg.flightInfo.flightNumber)
-    //           console.log(leg.flightInfo.flightStops)
-    //           console.log(leg.flightInfo.planeType)
-              
-
-    //         }
-    //       }
-    //     }
-
-    //   } else {
-    //     html += "<p>No flights found.</p>";
-    //   }
-    //  // 🔥 Show Top Deals
-    //   // if (flightDeals && flightDeals.length > 0) {
-    //   //   html += `<h3>🔥 Top Deals</h3><div class="deals-container">`;
-    //   //   html += flightDeals.map(deal => `
-    //   //     <div class="deal-card">
-    //   //       <p>${deal.key}</p>
-    //   //       <p>${deal.price?.formatted || "N/A"}</p>
-    //   //     </div>
-    //   //   `).join("");
-    //   //   html += "</div>";
-    //   // }
-
-    //   // ✈️ Show Flight Offers
-      
-
-    //   resultsDiv.innerHTML = html;
-    // } else {
-    //   resultsDiv.innerHTML = `<p>${data.message || "No flights found."}</p>`;
-    // }
-
-    // }
-
-
-async function convertToGBP(amount,currencyCode) {
-  const response = await fetch(`https://v6.exchangerate-api.com/v6/581d6b20a6a4a3b9f8e716cf/pair/${currencyCode}/GBP`);
-  const data = await response.json();
-  console.log(data);
-  console.log(data.conversion_rate);
-  const rate = data.conversion_rate;
-  return amount * rate;
-}
-
-  </script>
-</body>
-</html>
+<!-- index.html content ends here -->
+{% endblock %}
