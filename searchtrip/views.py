@@ -120,7 +120,7 @@ def search_flights(request):
     #     "date": dep_date if not return_date else f"{dep_date},{return_date}"
     # }
 
-    querystring = {"languagecode":"en","children":"4,12","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":"2025-12-30","from":dep_code,"to":arr_code}
+    querystring = {"languagecode":"en","children":"4,12","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":"2025-12-30","from":dep_code,"to":arr_code,"currency":"GBP"}
     headers = {
         "X-RapidAPI-Key": "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438",
         "X-RapidAPI-Host": "booking-com-api5.p.rapidapi.com"
