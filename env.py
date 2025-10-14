@@ -6,4 +6,4 @@ os.environ.setdefault("SECRET_KEY", "django-insecure-ud7yq!g)^-qx%_(+&bjj$90iucn
 os.environ.setdefault("RAPIDAPI_KEY", "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438")
 os.environ.setdefault("OPENWEATHER_API_KEY", "dded5c9e26e6803c13b6533b632dd0eb")
 os.environ.setdefault("AVIATIONSTACK_API_KEY", "3f88e0d108ac3d99c2b38f240ddc3f67")
-os.environ.setdefault("BOOKINGRAPIDAPI_KEY", "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c9275438")
+os.environ.setdefault("BOOKINGRAPIDAPI_KEY", "b074797cacmsh5c0fb324e2ba154p136e99jsn0f42c92754381")

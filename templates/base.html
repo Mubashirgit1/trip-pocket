@@ -46,9 +46,17 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
+                <a class="nav-link" href="{% url 'search_filter' %}">FLIGHTS</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {% if request.path == logout_url %}active{% endif %}"
                     href="{% url 'account_logout' %}">LOGOUT</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == logout_url %}active{% endif %}"
+                    href="{% url 'account_logout' %}">Hi {{ user }}</a>
+            </li>
+            
             {% else %}
             <li class="nav-item">
                 <a class="nav-link {% if request.path == signup_url %}active{% endif %}"

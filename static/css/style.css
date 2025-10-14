@@ -263,6 +263,9 @@ section .section-title {
   border-radius: 0 16px 16px 0;
   padding: 2px 12px;
 }
+.sign-out{
+    margin: 60px 0px !important;
+}
 @media (max-width:767px){
 	#footer h5 {
     padding-left: 0;

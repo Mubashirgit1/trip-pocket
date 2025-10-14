@@ -1,14 +1,16 @@
+import json
 import os
 import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
-
-
+from django.contrib.auth.decorators import login_required
+from .models import SearchFilter
+# Create your views here.
 def home(request):
     return render(request, "search/index.html")
-# Create your views here.
 
+@login_required(login_url='/accounts/login/')
 def search_filter(request):
     return render(request, "search/flight_search.html")
 
@@ -34,6 +36,27 @@ def search_cities(request):
 
     return JsonResponse(simplified, safe=False)
 
+@login_required
+def save_filter(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode("utf-8"))
+        dep_city = data.get("dep_city")
+        arr_city = data.get("arr_city")
+        dep_date = data.get("dep_date")
+        ret_date = data.get("arr_date")
+
+        # Save filter
+        filter_obj = SearchFilter.objects.create(
+            user=request.user,
+            departure_city=dep_city,
+            arrival_city=arr_city,
+            departure_date=dep_date,
+            return_date=ret_date or None
+        )
+
+        return JsonResponse({"message": "Filter saved successfully!", "id": filter_obj.id})
+    
+    return JsonResponse({"error": "Invalid request"}, status=400)
 
 
 def get_weather(request):
@@ -45,10 +68,6 @@ def get_weather(request):
     data = res.json()
 
     return JsonResponse(data)
-
-
-
-
 
 def get_airports_by_city(request):
     query = request.GET.get("city", "")
@@ -109,7 +128,6 @@ def search_flights(request):
     adults = request.GET.get("adults", 1)
     children = request.GET.get("children", "")  # e.g., "4,12"
     cabin_class = request.GET.get("cabin_class", "ECONOMY")
-
 
     querystring = {"languagecode":"en","children":"","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":return_date,"from":dep_code,"to":arr_code,"currency":"GBP"}
     headers = {

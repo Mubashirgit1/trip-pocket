@@ -32,6 +32,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
 OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 AVIATIONSTACK_API_KEY = os.environ.get("AVIATIONSTACK_API_KEY")
+ACCOUNT_EMAIL_VERIFICATION = "none"   # options: "mandatory", "optional", "none"
+ACCOUNT_EMAIL_REQUIRED = False        # don't require an email (optional)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -52,7 +54,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'searchtrip'
+    'searchtrip',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
