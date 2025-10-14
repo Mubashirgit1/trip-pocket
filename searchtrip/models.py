@@ -6,6 +6,8 @@ class SearchFilter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_filters')
     departure_city = models.CharField(max_length=100)
     arrival_city = models.CharField(max_length=100)
+    departure_airport_code = models.CharField(max_length=10, null=True, blank=True)
+    arrival_airport_code = models.CharField(max_length=10, null=True, blank=True)
     departure_date = models.DateField()
     return_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

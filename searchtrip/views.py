@@ -42,14 +42,18 @@ def save_filter(request):
         data = json.loads(request.body.decode("utf-8"))
         dep_city = data.get("dep_city")
         arr_city = data.get("arr_city")
+        dep_airport = data.get("dep_airport")
+        arr_airport = data.get("arr_airport")
         dep_date = data.get("dep_date")
-        ret_date = data.get("arr_date")
+        ret_date = data.get("ret_date")
 
         # Save filter
         filter_obj = SearchFilter.objects.create(
             user=request.user,
             departure_city=dep_city,
             arrival_city=arr_city,
+            departure_airport_code=dep_airport or None,
+            arrival_airport_code=arr_airport or None,
             departure_date=dep_date,
             return_date=ret_date or None
         )
