@@ -28,61 +28,96 @@
     font-weight: 600;
   }
 </style>
-<div class="search-box">
-  <h2 class="text-center mb-4">✈️ Search Flights</h2>
+<div class="container-fluid mt-4">
+  <div class="row">
 
-  <div class="row g-3">
-    <!-- Departure City -->
-    <div class="col-md-6">
-      <h2>Departure City</h2>
-      <input type="text" id="dep_Input" class="form-control" placeholder="Start typing a city..." required>
-      <ul id="dep_suggestions" class="suggestions"></ul>
+    <!-- LEFT: SEARCH BOX -->
+    <div class="col-md-9">
+      <div class="search-box p-4 shadow-sm bg-white rounded">
+        <h2 class="text-center mb-4 text-primary">✈️ Search Flights</h2>
 
-      <label for="dep_airport" class="form-label">Select Airport:</label>
-      <br>
-      <select id="dep_airport" class="form-control" required>
-        <option value="">-- Select Airport --</option>
-      </select>
+        <div class="row g-3">
+          <!-- Departure City -->
+          <div class="col-md-6">
+            <h5>Departure City</h5>
+            <input type="text" id="dep_Input" class="form-control" placeholder="Start typing a city..." required>
+            <ul id="dep_suggestions" class="suggestions"></ul>
+
+            <label for="dep_airport" class="form-label mt-2">Select Airport:</label>
+            <select id="dep_airport" class="form-control" required>
+              <option value="">-- Select Airport --</option>
+            </select>
+          </div>
+
+          <!-- Arrival City -->
+          <div class="col-md-6">
+            <h5>Arrival City</h5>
+            <input type="text" id="arr_Input" class="form-control" placeholder="Start typing a city..." required>
+            <ul id="arr_suggestions" class="suggestions"></ul>
+
+            <label for="arr_airport" class="form-label mt-2">Select Airport:</label>
+            <select id="arr_airport" class="form-control" required>
+              <option value="">-- Select Airport --</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="row g-3 mt-3">
+          <div class="col-md-6">
+            <label for="dep_date" class="form-label">Departure Date:</label>
+            <input type="date" id="dep_date" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label for="arr_date" class="form-label">Return Date:</label>
+            <input type="date" id="arr_date" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center mt-4">
+          <button id="searchBtn" class="btn btn-primary px-4 me-2">Search Flights</button>
+          <button id="saveBtn" class="btn btn-outline-primary px-4" onclick="saveFilter()">Save Search</button>
+        </div>
+
+        <p id="msg" class="mt-3 text-success text-center"></p>
+
+        <!-- Results -->
+        <div id="flightsContainer" class="mt-4"></div>
+      </div>
     </div>
 
-    <!-- Arrival City -->
-    <div class="col-md-6">
-      <h2>Arrival City</h2>
-      <input type="text" id="arr_Input" class="form-control" placeholder="Start typing a city..." required>
-      <ul id="arr_suggestions" class="suggestions"></ul>
+    <!-- RIGHT: SAVED SEARCHES SIDEBAR -->
+    <div class="col-md-3">
+      <div class="p-3 bg-light border rounded shadow-sm h-100">
+        <h5 class="text-primary mb-3">Saved Searches</h5>
 
-      <label for="arr_airport" class="form-label">Select Airport:</label>
-      <br>
-      <select id="arr_airport" class="form-control" required>
-        <option value="">-- Select Airport --</option>
-      </select>
-
+        {% if saved_searches %}
+          <ul class="list-group">
+            {% for s in saved_searches %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+              <div>
+                <strong>{{ s.departure_airport_code }}</strong> → <strong>{{ s.arrival_airport }}</strong><br>
+                <small>{{ s.departure_date|date:"M d, Y" }}</small>
+              </div>
+              <button 
+                class="btn btn-sm btn-outline-primary load-search"
+                data-dep="{{ s.departure_airport }}" 
+                data-arr="{{ s.arrival_airport }}" 
+                data-depdate="{{ s.departure_date }}" 
+                data-retdate="{{ s.return_date|default_if_none:'' }}">
+                Load
+              </button>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">No saved searches yet.</p>
+        {% endif %}
+      </div>
     </div>
   </div>
-
-  <!-- Dates -->
-  <div class="row g-3 mt-3">
-    <div class="col-md-6">
-      <label for="dep_date" class="form-label">Departure Date:</label>
-      <input type="date" id="dep_date" class="form-control" required>
-    </div>
-    <div class="col-md-6">
-      <label for="arr_date" class="form-label">Return Date:</label>
-      <input type="date" id="arr_date" class="form-control" required>
-    </div>
-  </div>
-
-  <!-- Button -->
-  <div class="text-center mt-4">
-    <button id="searchBtn" class="btn btn-primary px-4">Search Flights</button>
-    <button id="saveBtn" class="btn btn-primary px-4" onclick="saveFilter()">Save Flights</button>
-  </div>
-<p id="msg" class="mt-3 text-success"></p>
-  <!-- Results -->
-
 </div>
-
-  <div id="flightsContainer" class="mt-4"></div>
 <script>
 
   const dep_input = document.getElementById("dep_Input");
@@ -261,12 +296,16 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
 
 
 async function saveFilter() {
+   
+
   const dep_city = document.getElementById('dep_Input').value;
   const arr_city = document.getElementById('arr_Input').value;
   const dep_date = document.getElementById('dep_date').value;
   const ret_date = document.getElementById('arr_date').value;
-  const dep_airport = document.getElementById('dep_airport').value;
-  const arr_airport = document.getElementById('arr_airport').value;
+  const dep_airportName = dep_airport.options[dep_airport.selectedIndex].text;
+  const arr_airportName =  arr_airport.options[arr_airport.selectedIndex].text;
+  const dep_airportcode = dep_airport.value;
+  const arr_airportcode = arr_airport.value;
 
   const response = await fetch("{% url 'save_filter' %}", {
     method: "POST",
@@ -279,8 +318,10 @@ async function saveFilter() {
       arr_city,
       dep_date,
       ret_date,
-      dep_airport,
-      arr_airport
+      dep_airportName,
+      arr_airportName,
+      dep_airportcode,
+      arr_airportcode
     }),
   });
 

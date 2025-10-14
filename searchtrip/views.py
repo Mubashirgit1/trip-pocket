@@ -6,13 +6,17 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import SearchFilter
+
 # Create your views here.
 def home(request):
     return render(request, "search/index.html")
 
 @login_required(login_url='/accounts/login/')
 def search_filter(request):
-    return render(request, "search/flight_search.html")
+    saved_searches = SearchFilter.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, "search/flight_search.html", {
+        'saved_searches': saved_searches
+    })
 
 def search_cities(request):
     query = request.GET.get("q", "")
@@ -42,8 +46,10 @@ def save_filter(request):
         data = json.loads(request.body.decode("utf-8"))
         dep_city = data.get("dep_city")
         arr_city = data.get("arr_city")
-        dep_airport = data.get("dep_airport")
-        arr_airport = data.get("arr_airport")
+        dep_airport = data.get("dep_airportName")
+        arr_airport = data.get("arr_airportName")
+        dep_airportcode = data.get("dep_airportcode")
+        arr_airportcode = data.get("arr_airportcode")
         dep_date = data.get("dep_date")
         ret_date = data.get("ret_date")
 
@@ -52,8 +58,10 @@ def save_filter(request):
             user=request.user,
             departure_city=dep_city,
             arrival_city=arr_city,
-            departure_airport_code=dep_airport or None,
-            arrival_airport_code=arr_airport or None,
+            departure_airport_code=dep_airportcode or None,
+            arrival_airport_code=arr_airportcode or None,
+            departure_airport=dep_airport or None,
+            arrival_airport=arr_airport or None,
             departure_date=dep_date,
             return_date=ret_date or None
         )
