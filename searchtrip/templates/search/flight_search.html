@@ -35,7 +35,7 @@
     <div class="col-md-9">
       <div class="search-box p-4 shadow-sm bg-white rounded">
         <h2 class="text-center mb-4 text-primary">✈️ Search Flights</h2>
-
+            <input type="hidden" id="search_id">
         <div class="row g-3">
           <!-- Departure City -->
           <div class="col-md-6">
@@ -78,6 +78,7 @@
         <div class="text-center mt-4">
           <button id="searchBtn" class="btn btn-primary px-4 me-2">Search Flights</button>
           <button id="saveBtn" class="btn btn-outline-primary px-4" onclick="saveFilter()">Save Search</button>
+          <button id="editBtn" class="btn btn-outline-primary px-4" onclick="updateSearch()">Edit Search</button>
         </div>
 
         <p id="msg" class="mt-3 text-success text-center"></p>
@@ -91,29 +92,9 @@
     <div class="col-md-3">
       <div class="p-3 bg-light border rounded shadow-sm h-100">
         <h5 class="text-primary mb-3">Saved Searches</h5>
+          <ul id="saved-searches" class="list-group"></ul>
 
-        {% if saved_searches %}
-          <ul class="list-group">
-            {% for s in saved_searches %}
-            <li class="list-group-item d-flex justify-content-between align-items-start">
-              <div>
-                <strong>{{ s.departure_airport_code }}</strong> → <strong>{{ s.arrival_airport }}</strong><br>
-                <small>{{ s.departure_date|date:"M d, Y" }}</small>
-              </div>
-              <button 
-                class="btn btn-sm btn-outline-primary load-search"
-                data-dep="{{ s.departure_airport }}" 
-                data-arr="{{ s.arrival_airport }}" 
-                data-depdate="{{ s.departure_date }}" 
-                data-retdate="{{ s.return_date|default_if_none:'' }}">
-                Load
-              </button>
-            </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="text-muted">No saved searches yet.</p>
-        {% endif %}
+        
       </div>
     </div>
   </div>
@@ -126,7 +107,6 @@
   const arr_airport = document.getElementById("arr_airport");
   const dep_date = document.getElementById("dep_date");
   const arr_date = document.getElementById("arr_date");
-
   const searchBtn = document.querySelector("button");
 
   searchBtn.addEventListener("click", async () => {
@@ -210,7 +190,7 @@
 
     const res = await fetch(`/search-flights/?${params.toString()}`);
     const data = await res.json();
-
+    toggleButton();
    const container = document.getElementById('flightsContainer');
 container.innerHTML = ''; // Clear previous content
 if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
@@ -297,15 +277,28 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
 
 async function saveFilter() {
    
+  const dep_airportInput = document.getElementById("dep_airport");
+  const arr_airportInput = document.getElementById("arr_airport");
+  const departure_city = document.getElementById('dep_Input').value;
+  const arrival_city = document.getElementById('arr_Input').value;
+  const departure_date = document.getElementById('dep_date').value;
+  const return_date = document.getElementById('arr_date').value;
+  const dep_airportName = dep_airportInput.options[dep_airportInput.selectedIndex].text;
+  const arr_airportName =  arr_airportInput.options[arr_airportInput.selectedIndex].text;
+  const departure_airport_code = dep_airportInput.value;
+  const arrival_airport_code = arr_airportInput.value;
 
-  const dep_city = document.getElementById('dep_Input').value;
-  const arr_city = document.getElementById('arr_Input').value;
-  const dep_date = document.getElementById('dep_date').value;
-  const ret_date = document.getElementById('arr_date').value;
-  const dep_airportName = dep_airport.options[dep_airport.selectedIndex].text;
-  const arr_airportName =  arr_airport.options[arr_airport.selectedIndex].text;
-  const dep_airportcode = dep_airport.value;
-  const arr_airportcode = arr_airport.value;
+  if (
+  !departure_city ||
+  !arrival_city ||
+  !departure_date ||
+  !return_date ||
+  !departure_airport_code ||
+  !arrival_airport_code
+) {
+  alert("Please fill in all fields before saving the search.");
+  return;
+} 
 
   const response = await fetch("{% url 'save_filter' %}", {
     method: "POST",
@@ -314,29 +307,232 @@ async function saveFilter() {
       "X-CSRFToken": getCSRFToken(),
     },
     body: JSON.stringify({
-      dep_city,
-      arr_city,
-      dep_date,
-      ret_date,
+      departure_city,
+      arrival_city,
+      departure_date,
+      return_date,
       dep_airportName,
       arr_airportName,
-      dep_airportcode,
-      arr_airportcode
-    }),
+      departure_airport_code,
+      arrival_airport_code
+    })
   });
 
   const data = await response.json();
   const msg = document.getElementById("msg");
+  toggleButton();
 
   if (response.ok) {
     msg.textContent = data.message;
     msg.classList.remove("text-danger");
     msg.classList.add("text-success");
+    loadSavedSearches(); // refresh sidebar
+    
   } else {
     msg.textContent = data.error || "Something went wrong.";
     msg.classList.remove("text-success");
     msg.classList.add("text-danger");
   }
+}
+
+function updateSearch() {
+  
+  const searchId = document.getElementById('search_id').value;
+  
+  if(searchId == ''){
+    alert("This search need to save first.");
+    return;
+  }
+
+  const dep_airportInput = document.getElementById("dep_airport");
+  const arr_airportInput = document.getElementById("arr_airport");
+  const departure_city = document.getElementById('dep_Input').value;
+  const arrival_city = document.getElementById('arr_Input').value;
+  const departure_date = document.getElementById('dep_date').value;
+  const return_date = document.getElementById('arr_date').value;
+  const departure_airport = dep_airportInput.options[dep_airportInput.selectedIndex].text;
+  const arrival_airport =  arr_airportInput.options[arr_airportInput.selectedIndex].text;
+  const departure_airport_code = dep_airportInput.value;
+  const arrival_airport_code = arr_airportInput.value;
+
+  if (
+  !departure_city ||
+  !arrival_city ||
+  !departure_date ||
+  !return_date ||
+  !departure_airport_code ||
+  !arrival_airport_code
+) {
+  alert("Please fill in all fields before saving the search.");
+  return;
+} 
+
+
+  fetch(`/edit-search/${searchId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCSRFToken('csrftoken') // make sure you include CSRF
+    },
+      body: JSON.stringify({
+      departure_city,
+      arrival_city,
+      departure_date,
+      return_date,
+      departure_airport,
+      arrival_airport,
+      departure_airport_code,
+      arrival_airport_code
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        loadSavedSearches(); // refresh sidebar
+        alert('✅ Search updated successfully!');
+        toggleButton()
+      
+      } else {
+        alert('❌ ' + data.message);
+        console.error(data.errors);
+      }
+    })
+    .catch(err => console.error('Error:', err));
+}
+
+document.addEventListener("DOMContentLoaded", loadSavedSearches);
+
+async function loadSavedSearches() {
+  const savedSearchList = document.getElementById("saved-searches");
+  savedSearchList.innerHTML = "<li>Loading...</li>";
+
+  try {
+    const res = await fetch("/get-saved-searches/");
+    if (!res.ok) throw new Error("Failed to load saved searches");
+    const data = await res.json();
+
+    savedSearchList.innerHTML = "";
+    toggleButton();
+    data.forEach(search => {
+      const li = document.createElement("li");
+      li.classList.add("list-group-item", "list-group-item-action");
+      li.textContent = `${search.departureCity} → ${search.arrivalCity} (${search.departureDate})`;
+      li.addEventListener("click", () => loadSearchToForm(search));
+
+      
+
+// Right side: icons container
+  const iconsDiv = document.createElement("div");
+  iconsDiv.classList.add("float-end");
+
+  // Edit icon
+  const editIcon = document.createElement("i");
+  editIcon.classList.add("fas", "fa-edit", "text-primary", "me-2"); // Font Awesome classes
+  editIcon.style.cursor = "pointer";
+  editIcon.title = "Edit";
+  editIcon.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent li click
+    loadSearchToForm(search, true); // Pass flag for edit mode
+  });
+
+  // Delete icon
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("fas", "fa-trash-alt", "text-danger");
+   deleteIcon.style.cursor = "pointer";
+  deleteIcon.title = "Delete";
+  deleteIcon.addEventListener("click", (e) => {
+    e.stopPropagation();
+    deleteSavedSearch(search.id, li);
+  });
+
+  // Append icons to icons container
+  iconsDiv.appendChild(editIcon);
+  iconsDiv.appendChild(deleteIcon);
+li.appendChild(iconsDiv);
+
+
+      savedSearchList.appendChild(li);
+    });
+  } catch (err) {
+    savedSearchList.innerHTML = "<li>Error loading saved searches</li>";
+  }
+}
+
+async function deleteSavedSearch(searchId, liElement) {
+  if (!confirm("Are you sure you want to delete this saved search?")) return;
+
+  try {
+    const response = await fetch(`/delete-search/${searchId}/`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRFToken": getCSRFToken("csrftoken") // For Django
+      }
+    });
+
+    if (response.ok) {
+      liElement.remove(); // Remove the li from the DOM
+      alert("Saved search deleted!");
+    } else {
+      alert("Failed to delete search.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting search.");
+  }
+}
+
+
+function loadSearchToForm(search) {
+  document.getElementById("dep_Input").value = search.departureCity;
+  document.getElementById("arr_Input").value = search.arrivalCity;
+  document.getElementById("search_id").value = search.id;
+  depAirportSelect = document.getElementById("dep_airport");
+  depAirportSelect.innerHTML = '<option value="">-- Select Airport --</option>';
+  arrAirportSelect = document.getElementById("arr_airport");
+  arrAirportSelect.innerHTML = '<option value="">-- Select Airport --</option>';
+// Append options and set selected
+ console.log(search);
+  const option = document.createElement("option");
+  option.value = search.departureAirportCode;
+  option.textContent = search.departureAirport;
+  
+  // Set selected if matches
+  option.selected = true;
+  depAirportSelect.appendChild(option);
+ 
+
+// Append options and set selected
+ 
+  const option2 = document.createElement("option");
+  option2.value = search.arrivalAirportCode;
+  option2.textContent = search.arrivalAirport;
+  
+  // Set selected if matches
+  option2.selected = true;
+  arrAirportSelect.appendChild(option2);
+
+  document.getElementById("dep_date").value = search.departureDate;
+  document.getElementById("arr_date").value = search.returnDate;
+  toggleButton();
+
+}
+
+
+function toggleButton(){
+  const saveBtn = document.getElementById('saveBtn');
+  const updateBtn = document.getElementById('editBtn');
+  const searchIdInput = document.getElementById('search_id');
+
+    const searchId = searchIdInput.value.trim();
+    if (searchId === "" || searchId === null) {
+      // No saved search — show Save button
+      saveBtn.style.display = "inline-block";
+      updateBtn.style.display = "none";
+    } else {
+      // Editing existing search — show Update button
+      saveBtn.style.display = "none";
+      updateBtn.style.display = "inline-block";
+    }
 }
 
 
@@ -346,8 +542,7 @@ function getCSRFToken() {
     ?.split('=')[1];
 }
 
-
-
+ 
 
 
 </script>

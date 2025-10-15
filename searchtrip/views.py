@@ -4,9 +4,11 @@ import requests
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import SearchFilter
-
+from django.views.decorators.csrf import csrf_exempt
+from .forms import SearchFilterForm
 # Create your views here.
 def home(request):
     return render(request, "search/index.html")
@@ -18,6 +20,62 @@ def search_filter(request):
         'saved_searches': saved_searches
     })
 
+
+@login_required
+def get_saved_searches(request):
+    searches = SearchFilter.objects.filter(user=request.user).order_by('-created_at')
+    data = [
+        {
+            "id": s.id,
+            "departureCity": s.departure_city,
+            "arrivalCity": s.arrival_city,
+            "departureAirport": s.departure_airport,
+            "arrivalAirport": s.arrival_airport,
+            "departureAirportCode": s.departure_airport_code,
+            "arrivalAirportCode": s.arrival_airport_code,
+            "departureDate": s.departure_date,
+            "returnDate": s.return_date,
+        }
+        for s in searches
+    ]
+    return JsonResponse(data, safe=False)
+
+@csrf_exempt
+@login_required
+def edit_search(request, search_id):
+    """
+    Edit saved search and return JSON response.
+    """
+    search = get_object_or_404(SearchFilter, id=search_id, user=request.user)
+    try:
+        # Parse JSON data from request body
+        data = json.loads(request.body.decode('utf-8'))
+        form = SearchFilterForm(data, instance=search)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({
+                'success': True,
+                'message': 'Search updated successfully.',
+                'data': {
+                    'id': search.id,
+                    'departure_city': search.departure_city,
+                    'arrival_city': search.arrival_city,
+                    'departure_airport': search.departure_airport,
+                    'arrival_airport': search.arrival_airport,
+                    'departure_date': str(search.departure_date) if search.departure_date else None,
+                    'return_date': str(search.return_date) if search.return_date else None,
+                }
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid data.',
+                'errors': form.errors
+            }, status=400)
+
+    except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
+@login_required
 def search_cities(request):
     query = request.GET.get("q", "")
     if not query:
@@ -44,43 +102,24 @@ def search_cities(request):
 def save_filter(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
-        dep_city = data.get("dep_city")
-        arr_city = data.get("arr_city")
-        dep_airport = data.get("dep_airportName")
-        arr_airport = data.get("arr_airportName")
-        dep_airportcode = data.get("dep_airportcode")
-        arr_airportcode = data.get("arr_airportcode")
-        dep_date = data.get("dep_date")
-        ret_date = data.get("ret_date")
-
         # Save filter
         filter_obj = SearchFilter.objects.create(
             user=request.user,
-            departure_city=dep_city,
-            arrival_city=arr_city,
-            departure_airport_code=dep_airportcode or None,
-            arrival_airport_code=arr_airportcode or None,
-            departure_airport=dep_airport or None,
-            arrival_airport=arr_airport or None,
-            departure_date=dep_date,
-            return_date=ret_date or None
+            departure_city=data.get("departure_city"),
+            arrival_city=data.get("arrival_city"),
+            departure_airport_code=data.get("departure_airport_code") or None,
+            arrival_airport_code=data.get("arrival_airport_code") or None,
+            departure_airport=data.get("dep_airportName") or None,
+            arrival_airport=data.get("arr_airportName") or None,
+            departure_date=data.get("departure_date"),
+            return_date=data.get("return_date") or None
         )
 
         return JsonResponse({"message": "Filter saved successfully!", "id": filter_obj.id})
     
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-
-def get_weather(request):
-    city = request.GET.get("city", "London")
-    api_key = os.getenv("OPENWEATHER_API_KEY")  # store your key in .env
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-
-    res = requests.get(url)
-    data = res.json()
-
-    return JsonResponse(data)
-
+@login_required
 def get_airports_by_city(request):
     query = request.GET.get("city", "")
     if not query:
@@ -96,6 +135,7 @@ def get_airports_by_city(request):
     params = {"query": query, "languagecode": "en"}
    
     response = requests.get(url, headers=headers, params=params)
+    
     if response.status_code == 200:
         data = response.json()
         airports_data = data.get("data", [])
@@ -109,24 +149,10 @@ def get_airports_by_city(request):
             ]
         return JsonResponse({"airports": results})
     else:
-        return JsonResponse({"error": "API request failed"}, status=500)
+        return JsonResponse({"error": response.text}, status=500)
 
 
-
-# ✅ Django view
-
-
-# i try aviation apis but need paid version
-# def get_flight_info(flight_iata):
-#     """Fetch flight data by IATA code, e.g. 'AF123'"""
-#     api_key = os.getenv("AVIATIONSTACK_API_KEY")  # store your key in .env
-#     url = f"http://api.aviationstack.com/v1/flights"
-#     params = {"access_key": api_key, "flight_iata": flight_iata}
-
-#     res = requests.get(url, params=params)
-#     return res.json()
-
-
+@login_required
 def search_flights(request):
     api_key = os.getenv("BOOKINGRAPIDAPI_KEY")  # store your key in .env
 
@@ -186,8 +212,18 @@ def search_flights(request):
             "message": str(e)
         }, status=500)
 
+def delete_search(request, search_id):
+    if request.method == "DELETE":
+        search = SearchFilter.objects.filter(id=search_id, user=request.user).first()
+        if search:
+            search.delete()
+            return JsonResponse({"message": "Deleted successfully"})
+        else:
+            return JsonResponse({"error": "Search not found"}, status=404)
+    return JsonResponse({"error": "Invalid method"}, status=405)
 
 
+@login_required
 def flight_search(request):
     departure_city = request.GET.get("departure", "New York")
     arrival_city = request.GET.get("arrival", "London")
