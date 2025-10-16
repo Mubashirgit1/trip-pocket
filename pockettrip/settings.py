@@ -34,6 +34,8 @@ OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 AVIATIONSTACK_API_KEY = os.environ.get("AVIATIONSTACK_API_KEY")
 ACCOUNT_EMAIL_VERIFICATION = "none"   # options: "mandatory", "optional", "none"
 ACCOUNT_EMAIL_REQUIRED = False        # don't require an email (optional)
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -46,6 +48,7 @@ ALLOWED_HOSTS = ['.herokuapp.com',
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django_summernote',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -55,7 +58,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'searchtrip',
-    'widget_tweaks'
+    'widget_tweaks',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'about'
 ]
 
 MIDDLEWARE = [
