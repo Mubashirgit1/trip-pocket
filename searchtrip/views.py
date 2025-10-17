@@ -2,13 +2,14 @@ import json
 import os
 import requests
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import SearchFilter
 from django.views.decorators.csrf import csrf_exempt
 from .forms import SearchFilterForm
+
+
 # Create your views here.
 def home(request):
     return render(request, "search/index.html")
@@ -240,3 +241,7 @@ def flight_search(request):
 
     print(res)
     return JsonResponse(res)
+
+def custom_404(request, exception):
+    """Custom 404 error page."""
+    return render(request, "404.html", status=404)

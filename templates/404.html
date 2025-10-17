@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<div class="container text-center my-5 py-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-12 col-md-8">
+      <!-- Travel illustration -->
+      <img src="{% static 'images/favicon/favicon.ico' %}" 
+           alt="Pocket Trip" 
+           class="img-fluid mb-4" 
+           style="max-width: 350px;">
+
+      <!-- Error text -->
+      <h1 class="display-3 fw-bold text-primary">404</h1>
+      <h2 class="mb-3">Looks like you’re off the map!</h2>
+      <p class="text-muted mb-4">
+        The page you’re searching for doesn’t exist or has been moved.
+        But don’t worry — your next adventure is just a click away.
+      </p>
+
+      <!-- Back home button -->
+      <a href="{% url 'home' %}" class="btn btn-primary btn-md rounded-3">
+         Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

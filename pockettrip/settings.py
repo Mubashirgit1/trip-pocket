@@ -37,10 +37,8 @@ ACCOUNT_EMAIL_REQUIRED = False        # don't require an email (optional)
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['.herokuapp.com',
-                 '127.0.0.1',]
+DEBUG = False
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
