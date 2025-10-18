@@ -1,14 +1,15 @@
 import json
 import os
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import SearchFilter
 from django.views.decorators.csrf import csrf_exempt
 from .forms import SearchFilterForm
-
+from .forms import ContactForm
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -241,6 +242,23 @@ def flight_search(request):
 
     print(res)
     return JsonResponse(res)
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # You can save data to the database or send an email here
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            # Example: just show a success message
+            messages.success(request, f"Thank you {name}! We’ll get back to you soon.")
+            return redirect('contact')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'contact.html', {'form': form})
 
 def custom_404(request, exception):
     """Custom 404 error page."""

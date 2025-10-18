@@ -39,10 +39,10 @@
                     Pocket Trip</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.path == about_url %}active{%endif%}" href="{% url 'about' %}">ABOUT US</a>
+                <a class="nav-link {% if request.path == about %}active{%endif%}" href="{% url 'about' %}">ABOUT US</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">CONTACTS</a>
+                <a class="nav-link {% if request.path == contact %}active{%endif%}"   href="{% url 'contact' %}">CONTACTS</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
