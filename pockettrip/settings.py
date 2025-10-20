@@ -32,12 +32,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY")
 OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY")
 AVIATIONSTACK_API_KEY = os.environ.get("AVIATIONSTACK_API_KEY")
+EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
 ACCOUNT_EMAIL_VERIFICATION = "none"   # options: "mandatory", "optional", "none"
 ACCOUNT_EMAIL_REQUIRED = False        # don't require an email (optional)
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 

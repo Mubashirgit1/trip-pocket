@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import search_cities, home,flight_search,get_airports_by_city,search_flights,search_filter,save_filter,get_saved_searches,edit_search,delete_search,contact_view
+from .views import search_cities, home,flight_search,get_airports_by_city,search_flights,search_filter,save_filter,get_saved_searches,edit_search,delete_search,contact_view,get_exchange_rate
 
 urlpatterns = [
     path("autocomplete/", search_cities, name="city_autocomplete"),
@@ -13,5 +13,5 @@ urlpatterns = [
     path('edit-search/<int:search_id>/', edit_search, name='edit_search'),
     path('delete-search/<int:search_id>/', delete_search, name='delete_search'),
     path('contact/', contact_view, name='contact'),
-
+    path('api/exchange-rate/', get_exchange_rate, name='exchange_rate'),
 ]

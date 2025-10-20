@@ -53,8 +53,8 @@
                     href="{% url 'account_logout' %}">LOGOUT</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.path == logout_url %}active{% endif %}"
-                    href="{% url 'account_logout' %}">Hi {{ user }}</a>
+                <a class="nav-link"
+                    href="">Hi {{ user }}</a>
             </li>
             
             {% else %}
@@ -113,9 +113,9 @@
                                     <ul class="list-unstyled quick-links">
                                         <li><a href="{% url 'home' %}"><i class="fa fa-angle-double-right"></i>Home</a>
                                         </li>
-                                        <li><a href="javascript:void();"><i
+                                        <li><a href="{% url 'about' %}"><i
                                                     class="fa fa-angle-double-right"></i>About</a></li>
-                                        <li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Contact
+                                        <li><a href="{% url 'contact' %}"><i class="fa fa-angle-double-right"></i>Contact
                                                 US</a>
                                         </li>
 

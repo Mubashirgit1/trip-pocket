@@ -263,3 +263,23 @@ def contact_view(request):
 def custom_404(request, exception):
     """Custom 404 error page."""
     return render(request, "404.html", status=404)
+
+
+def get_exchange_rate(request):
+    base = request.GET.get('base', 'USD')
+    target = request.GET.get('target', 'GBP')
+
+    url = f"https://api.exchangerate-api.com/v4/latest/{base}"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return JsonResponse({'error': 'Failed to fetch exchange rate'}, status=500)
+
+    data = response.json()
+    rate = data['rates'].get(target)
+
+    return JsonResponse({
+        'base': base,
+        'target': target,
+        'rate': rate,
+    })
