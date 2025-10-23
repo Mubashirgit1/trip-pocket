@@ -24,7 +24,7 @@
   }
 
   .form-label {
-    color: white;
+    color: #03045E;
     font-weight: 600;
   }
 .btn-loader {
@@ -49,7 +49,7 @@
         <div class="row g-3">
           <!-- Departure City -->
           <div class="col-md-6">
-            <h5>Departure City</h5>
+            <label class="form-label">Departure City</label>
             <input type="text" id="dep_Input" class="form-control" placeholder="Start typing a city..." required>
             <ul id="dep_suggestions" class="suggestions"></ul>
 
@@ -61,7 +61,7 @@
 
           <!-- Arrival City -->
           <div class="col-md-6">
-            <h5>Arrival City</h5>
+            <label class="form-label">Arrival City</label>
             <input type="text" id="arr_Input" class="form-control" placeholder="Start typing a city..." required>
             <ul id="arr_suggestions" class="suggestions"></ul>
 
@@ -89,9 +89,9 @@
           <button id="searchBtn" class="btn btn-primary px-4 me-2">Search Flights
                 <span id="btnLoader" class="btn-loader" style="display: none;"></span>
           </button>
-          <button id="saveBtn" class="btn btn-outline-primary px-4" onclick="saveFilter()">Save Search
+          <button id="saveBtn" class="btn btn-primary px-4" onclick="saveFilter()">Save Search
           </button>
-          <button id="editBtn" class="btn btn-outline-primary px-4" onclick="updateSearch()">Edit Search</button>
+          <button id="editBtn" class="btn btn-primary px-4" onclick="updateSearch()">Edit Search</button>
         </div>
 
         <p id="msg" class="mt-3 text-success text-center"></p>
@@ -103,7 +103,7 @@
     <!-- RIGHT: SAVED SEARCHES SIDEBAR -->
     <div class="col-md-3">
       <div class="p-3 bg-light border rounded shadow-sm h-100">
-        <h5 class="text-primary mb-3">Saved Searches</h5>
+        <h2 class="text-primary mb-3 heading-2">Saved Searches</h2>
           <ul id="saved-searches" class="list-group"></ul>
 
         
