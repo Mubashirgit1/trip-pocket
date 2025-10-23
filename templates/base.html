@@ -35,14 +35,15 @@
         <ul class="navbar-nav container ">
             <li class="nav-item" style="margin-left:-20px;font-size:20px">
                 <a class="nav-link" href="{% url 'home' %}"><img src="{% static 'logo/logo.png' %}" alt="logo"
-                        width="70px" ; height="70">
+                        width="70" height="70">
                     Pocket Trip</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == about %}active{%endif%}" href="{% url 'about' %}">ABOUT US</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.path == contact %}active{%endif%}"   href="{% url 'contact' %}">CONTACTS</a>
+                <a class="nav-link {% if request.path == contact %}active{%endif%}"
+                    href="{% url 'contact' %}">CONTACTS</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
@@ -53,10 +54,9 @@
                     href="{% url 'account_logout' %}">LOGOUT</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"
-                    href="">Hi {{ user }}</a>
+                <a class="nav-link" href="">Hi {{ user }}</a>
             </li>
-            
+
             {% else %}
             <li class="nav-item">
                 <a class="nav-link {% if request.path == signup_url %}active{% endif %}"
@@ -86,8 +86,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="logo-part">
-                                <h2 class="w-50 logo-footer"><img src="{% static 'logo/transparent.png' %}" width="120"
-                                        height="120"></h2>
+                                <img class="w-50 logo-footer" src="{% static 'logo/transparent.png' %}" width="120"
+                                    height="120" alt="Footer Logo">
                                 <p>Dream it. Plan it. Pocket it.</p>
                             </div>
                         </div>
@@ -100,10 +100,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-6 px-4">
@@ -115,7 +111,8 @@
                                         </li>
                                         <li><a href="{% url 'about' %}"><i
                                                     class="fa fa-angle-double-right"></i>About</a></li>
-                                        <li><a href="{% url 'contact' %}"><i class="fa fa-angle-double-right"></i>Contact
+                                        <li><a href="{% url 'contact' %}"><i
+                                                    class="fa fa-angle-double-right"></i>Contact
                                                 US</a>
                                         </li>
 
@@ -154,16 +151,8 @@
             </div>
         </div>
 
-
-
-
-        </div>
     </section>
     <!-- ./Footer -->
-
-
-
-
 
 
     <!-- script tiles -->

@@ -1,18 +1,41 @@
 # trip-pocket
+
 TripPocket – keep trips in your “pocket” for later.
+
+Top Trip Pocket is a smart travel management and flight search web application built with Django and JavaScript.
+
+It allows users to search, compare, and organize flights, save custom filters, and manage past searches easily.
+
+The platform includes an About Us page to share your brand story and mission, and a Contact Us page so users can reach your team directly.
+
+Interactive features like SweetAlert2 notifications, loading indicators, and date validation enhance the user experience.
+
+Designed to be fast, responsive, and user-friendly — perfect for travelers and small travel businesses who want efficient trip planning tools.
+
+![Trip Pocket shown on a range of devices](/docs/images/mockup.png)
+
+[View Trip Pocket on Heroku](https://pocket-trip-0b51f0f8267b.herokuapp.com/)
+
+![GitHub last commit](https://img.shields.io/github/last-commit/Mubashirgit1/trip-pocket?color=red)
+![GitHub contributors](https://img.shields.io/github/contributors/Mubashirgit1/trip-pocket?color=orange)
+![GitHub language count](https://img.shields.io/github/languages/count/Mubashirgit1/trip-pocket?color=yellow)
+![GitHub top language](https://img.shields.io/github/languages/top/Mubashirgit1/trip-pocket?color=green)
+
+
+
 
 
 #### Favicon
 
 - A favicon in the browser tab.
 
-  ![favicon](assets/favicon/favicon.png)
+  ![favicon](static/images/favicon/favicon-32x32.png)
 
 #### Web APP LOGO
 
 - A Logo.
 
-  ![logo](assets/logo/logo.png)
+  ![logo](static/logo/logo.png)
 
 
 ### Colour Scheme
