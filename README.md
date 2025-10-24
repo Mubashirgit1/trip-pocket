@@ -35,7 +35,7 @@ Designed to be fast, responsive, and user-friendly — perfect for travelers and
 
 - A Logo.
 
-  ![logo](static/logo/logo.png)
+  ![logo](static/images/logo/logo.png)
 
 
 ### Colour Scheme
