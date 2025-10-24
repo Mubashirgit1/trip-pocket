@@ -40,7 +40,6 @@
 </style>
 <div class="container-fluid mt-4">
   <div class="row">
-
     <!-- LEFT: SEARCH BOX -->
     <div class="col-md-9">
       <div class="search-box p-4 shadow-sm bg-white rounded">
@@ -87,7 +86,6 @@
         <!-- Buttons -->
         <div class="text-center mt-4">
           <button id="searchBtn" class="btn btn-primary px-4 me-2">Search Flights
-                <span id="btnLoader" class="btn-loader" style="display: none;"></span>
           </button>
           <button id="saveBtn" class="btn btn-primary px-4" onclick="saveFilter()">Save Search
           </button>
@@ -208,9 +206,11 @@
       console.error("Error fetching airports:", error);
       airportSelect.innerHTML = '<option>Error fetching data</option>';
     }
+    hideLoader();
   }
 
   async function fetchFlights(depCode, arrCode, depDate, returnDate, adults, children) {
+    showLoader();
     const params = new URLSearchParams({
       dep: depCode,
       arr: arrCode,
@@ -222,8 +222,6 @@
     });
 
 
-    const btnLoader = document.getElementById("btnLoader");
-    btnLoader.style.display = "inline-block"; // show before fetch
     searchBtn.disabled = true;
     const originalText = searchBtn.textContent;
     searchBtn.textContent = "Searching...";
@@ -234,8 +232,9 @@
     
     const container = document.getElementById('flightsContainer');
     container.innerHTML = ''; // Clear previous content
-    btnLoader.style.display = "none"; // hide after fetch
+    
 if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
+  hideLoader();
   for (let offer of data.data.flightOffers) {
     const price = offer.priceBreakdown.total;
     const total = price.units + price.nanos / 1e9;
@@ -301,6 +300,7 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
   container.innerHTML = '<p class="text-center text-muted">No flight offers available.</p>';
   searchBtn.disabled = false;
     searchBtn.textContent = originalText;
+    hideLoader();
 }
   }
 
@@ -592,6 +592,20 @@ function getCSRFToken() {
     .find(row => row.startsWith('csrftoken='))
     ?.split('=')[1];
 } 
+
+  const loader = document.getElementById('loader');
+  const body = document.body;
+
+  function showLoader() {
+    loader.classList.add('active');
+    body.classList.add('loading');
+  }
+
+  function hideLoader() {
+    loader.classList.remove('active');
+    body.classList.remove('loading');
+  }
+
 
 </script>
 
