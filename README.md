@@ -1,8 +1,8 @@
-# trip-pocket
+# Pocket Trip
 
 TripPocket – keep trips in your “pocket” for later.
 
-Top Trip Pocket is a smart travel management and flight search web application built with Django and JavaScript.
+Top Pocket Trip is a smart travel management and flight search web application built with Django and JavaScript.
 
 It allows users to search, compare, and organize flights, save custom filters, and manage past searches easily.
 
@@ -12,9 +12,9 @@ Interactive features like SweetAlert2 notifications, loading indicators, and dat
 
 Designed to be fast, responsive, and user-friendly — perfect for travelers and small travel businesses who want efficient trip planning tools.
 
-![Trip Pocket shown on a range of devices](/docs/mockup/mockup-1.png)
+![Pocket Trip shown on a range of devices](/docs/mockup/mockup-1.png)
 
-[View Trip Pocket on Heroku](https://pocket-trip-0b51f0f8267b.herokuapp.com/)
+[View Pocket Trip on Heroku](https://pocket-trip-0b51f0f8267b.herokuapp.com/)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/Mubashirgit1/trip-pocket?color=red)
 ![GitHub contributors](https://img.shields.io/github/contributors/Mubashirgit1/trip-pocket?color=orange)
@@ -1339,7 +1339,7 @@ Email: Manuel.PerezRomero@cityofbristol.ac.uk
 
 ### User Stories
 
-## 🌍 Trip Pocket – User Stories
+## 🌍 Pocket Trip – User Stories
 
 ### 👤 As a Traveler (Main User)
 
@@ -1370,7 +1370,7 @@ Email: Manuel.PerezRomero@cityofbristol.ac.uk
 
 ## 🧩 System Architecture
 
-![Trip Pocket Architecture Diagram](assets/flowchart/Flowchart.png)
+![Pocket Trip Architecture Diagram](assets/flowchart/Flowchart.png)
 
 
 ## 🧱 Entity Relationship Diagram (ERD)
@@ -1386,7 +1386,7 @@ Email: Manuel.PerezRomero@cityofbristol.ac.uk
   - **Aviation Stack API** → Flight details  
   - **OpenWeatherMap API** → Real-time weather  
 
-![Trip Pocket ERD](assets/erd-diagram/erd-diagram.png)
+![Pocket Trip ERD](assets/erd-diagram/erd-diagram.png)
 
 ### Frameworks, Libraries & Programs Used
 
