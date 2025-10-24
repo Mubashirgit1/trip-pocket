@@ -79,84 +79,82 @@
 
 
     <!-- Footer -->
-    <section id="footer">
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="logo-part">
-                                <img class="w-50 logo-footer" src="{% static 'images/logo/transparent.png' %}" width="120"
-                                    height="120" alt="Footer Logo">
-                                <p>Dream it. Plan it. Pocket it.</p>
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="logo-part">
+                                    <img class="w-50 logo-footer" src="{% static 'images/logo/transparent.png' %}" width="120"
+                                        height="120" alt="Footer Logo">
+                                    <p>Dream it. Plan it. Pocket it.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 px-4">
-                            <p class="fw-bold">How To Use</p>
-                            <p>Find, save, and book — it’s that simple.</p>
-                            <a href="{% url 'home' %}" class="btn-footer">Home</a>
-                            <br>
-                            <a href="{% url 'contact' %}" class="btn-footer">Contact Us</a>
+                            <div class="col-md-6 px-4">
+                                <p class="fw-bold">How To Use</p>
+                                <p>Find, save, and book — it’s that simple.</p>
+                                <a href="{% url 'home' %}" class="btn-footer">Home</a>
+                                <br>
+                                <a href="{% url 'contact' %}" class="btn-footer">Contact Us</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6 px-4">
-                            <p class="fw-bold">How To Use</p>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-12">
-                                    <ul class="list-unstyled quick-links">
-                                        <li><a href="{% url 'home' %}"><i class="fa fa-angle-double-right"></i>Home</a>
-                                        </li>
-                                        <li><a href="{% url 'about' %}"><i
-                                                    class="fa fa-angle-double-right"></i>About</a></li>
-                                        <li><a href="{% url 'contact' %}"><i
-                                                    class="fa fa-angle-double-right"></i>Contact
-                                                US</a>
-                                        </li>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 px-4">
+                                <p class="fw-bold">How To Use</p>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <ul class="list-unstyled quick-links">
+                                            <li><a href="{% url 'home' %}"><i class="fa fa-angle-double-right"></i>Home</a>
+                                            </li>
+                                            <li><a href="{% url 'about' %}"><i
+                                                        class="fa fa-angle-double-right"></i>About</a></li>
+                                            <li><a href="{% url 'contact' %}"><i
+                                                        class="fa fa-angle-double-right"></i>Contact
+                                                    US</a>
+                                            </li>
 
-                                        {% if user.is_authenticated %}
+                                            {% if user.is_authenticated %}
 
-                                        {% else %}
-                                        <li><a href="{% url 'account_login' %}"><i
-                                                    class="fa fa-angle-double-right"></i>Login</a></li>
-                                        <li><a href="{% url 'account_signup' %}"><i
-                                                    class="fa fa-angle-double-right"></i>Register</a></li>
-                                        {% endif %}
-
+                                            {% else %}
+                                            <li><a href="{% url 'account_login' %}"><i
+                                                        class="fa fa-angle-double-right"></i>Login</a></li>
+                                            <li><a href="{% url 'account_signup' %}"><i
+                                                        class="fa fa-angle-double-right"></i>Register</a></li>
+                                            {% endif %}
 
 
-                                    </ul>
+
+                                        </ul>
+                                    </div>
+
                                 </div>
-
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="fw-bold">How To Use</p>
-                            <div class="social">
-                                <a href="https://www.facebook.com/" aria-label="Facebook">
-                                    <i class="fab fa-facebook-f m-2" aria-hidden="true"></i>
-                                    <span class="sr-only">Facebook</span>
-                                </a>
-                                <a href="https://www.instagram.com/" aria-label="Instagram">
-                                    <i class="fab fa-instagram m-2" aria-hidden="true"></i>
-                                    <span class="sr-only">Instagram</span>
-                                </a>
+                            <div class="col-md-6">
+                                <p class="fw-bold">How To Use</p>
+                                <div class="social">
+                                    <a href="https://www.facebook.com/" aria-label="Facebook">
+                                        <i class="fab fa-facebook-f m-2" aria-hidden="true"></i>
+                                        <span class="sr-only">Facebook</span>
+                                    </a>
+                                    <a href="https://www.instagram.com/" aria-label="Instagram">
+                                        <i class="fab fa-instagram m-2" aria-hidden="true"></i>
+                                        <span class="sr-only">Instagram</span>
+                                    </a>
+                                </div>
+                                <form class="form-footer my-3" method="post" action="#">
+                                    <input type="text" required placeholder="search here...." name="search">
+                                    <input type="submit" value="Go">
+                                </form>
+                                <p>Join our mailing list for new updates and announcements.</p>
                             </div>
-                            <form class="form-footer my-3" method="post" action="#">
-                                <input type="text" required placeholder="search here...." name="search">
-                                <input type="submit" value="Go">
-                            </form>
-                            <p>Join our mailing list for new updates and announcements.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-    </section>
     <!-- ./Footer -->
 
 
