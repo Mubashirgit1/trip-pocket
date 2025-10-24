@@ -12,7 +12,7 @@ Interactive features like SweetAlert2 notifications, loading indicators, and dat
 
 Designed to be fast, responsive, and user-friendly — perfect for travelers and small travel businesses who want efficient trip planning tools.
 
-![Trip Pocket shown on a range of devices](/docs/images/mockup.png)
+![Trip Pocket shown on a range of devices](/docs/mockup/mockup-1.png)
 
 [View Trip Pocket on Heroku](https://pocket-trip-0b51f0f8267b.herokuapp.com/)
 
@@ -205,7 +205,7 @@ Here is the color scheme for the project:
 - **Light cyan**: `#CAF0F8`
 
  
-![POCKETTRIP](assets/colorscheme/ocean-blue-serenity.png)
+![POCKETTRIP](docs/colorscheme/ocean-blue-serenity.png)
 Resource
 https://coolors.co/palette/03045e-023e8a-0077b6-0096c7-00b4d8-48cae4-90e0ef-ade8f4-caf0f8
 
