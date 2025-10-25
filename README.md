@@ -12,7 +12,7 @@ Interactive features like SweetAlert2 notifications, loading indicators, and dat
 
 Designed to be fast, responsive, and user-friendly — perfect for travelers and small travel businesses who want efficient trip planning tools.
 
-![Pocket Trip shown on a range of devices](/docs/mockup/mockup-1.png)
+![Pocket Trip shown on a range of devices](/docs/mockup/mockup-black.png)
 
 [View Pocket Trip on Heroku](https://pocket-trip-0b51f0f8267b.herokuapp.com/)
 
