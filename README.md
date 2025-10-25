@@ -20,7 +20,7 @@ Designed to be fast, responsive, and user-friendly — perfect for travelers and
 ![GitHub contributors](https://img.shields.io/github/contributors/Mubashirgit1/trip-pocket?color=orange)
 ![GitHub language count](https://img.shields.io/github/languages/count/Mubashirgit1/trip-pocket?color=yellow)
 ![GitHub top language](https://img.shields.io/github/languages/top/Mubashirgit1/trip-pocket?color=green)
-![W3C Validation](https://img.shields.io/w3c-validation/html?color=blueviolet&targetUrl=https%3A%2F%2Fpocket-trip.herokuapp.com%2F)
+![W3C Validation](https://img.shields.io/w3c-validation/html?color=blueviolet&targetUrl=https%3A%2F%2Fpocket-trip-0b51f0f8267b.herokuapp.com%2F)
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![Django](https://img.shields.io/badge/Django-5.0-success)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue)
