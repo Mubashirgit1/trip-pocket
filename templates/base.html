@@ -48,7 +48,7 @@
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'search_filter' %}">FLIGHTS</a>
+                <a class="nav-link" href="{% url 'search_filter' %}">SEARCH FLIGHTS</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {% if request.path == logout_url %}active{% endif %}"

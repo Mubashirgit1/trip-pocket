@@ -420,9 +420,6 @@ Stay updated with the latest offers, destinations, and travel tips!
 
 ---
 
-**Pocket Trip © 2025**  
-Your journey starts here.
-
 
 #### Footer Structure
 
@@ -558,6 +555,39 @@ Each flight result includes detailed information about price, airline, routes, a
    - **Segment Time:** 14h 05m  
 
 ---
+
+## 🛠️ Admin Role and Permissions
+
+Pocket Trip includes an **Admin Dashboard** powered by Django’s built-in admin site, allowing authorized administrators to manage the platform efficiently.  
+
+### 👑 Admin Capabilities
+
+- **User Management**
+  - View, add, edit, and delete registered users.
+  - Manage account statuses, permissions, and user roles.
+  - Verify and manage social accounts created via Django Allauth.
+
+- **Travel Content Management**
+  - Create, update, and delete flight data, tour packages, and destinations.
+  - Review and modify saved searches or itineraries created by users.
+
+- **API and Data Oversight**
+  - Monitor flight and hotel API requests from **RapidAPI** and **Booking.com** integrations.
+  - Handle exchange rate data and ensure accurate conversion rates (IDR → GBP, etc.).
+
+- **Site Configuration**
+  - Access and manage admin panel settings, widgets, and WYSIWYG (via **Django Summernote**).
+  - Update static content such as homepage descriptions, promotional banners, and travel tips.
+
+- **Feedback & Reports**
+  - View and manage user feedback and error logs.
+  - Oversee bug tracking and handle issues related to API limits or configuration.
+
+### 🧑‍💼 Admin Access
+
+Administrators log in via the **Django Admin Portal** at:  
+`/admin/`
+
 
 ### 🧭 Features
 
@@ -768,7 +798,7 @@ Pocket Trip leverages several Django packages to enhance functionality, improve 
 
 Below is the ERD representing the database relationships in **Pocket Trip** — including users, searches, itineraries, flights, and saved trips.
 
-![Pocket Trip ERD](docs/erd-diagram/erd-diagram.png)
+![Pocket Trip ERD](docs/erd-diagram/erd-diagram2.png)
 
 
 
