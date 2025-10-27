@@ -1,22 +1,26 @@
 import json
 import os
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import SearchFilter
 from django.views.decorators.csrf import csrf_exempt
-from .forms import SearchFilterForm
-from .forms import ContactForm
 from django.contrib import messages
+from .models import SearchFilter
+from .forms import SearchFilterForm, ContactForm
 
-# Create your views here.
+# =============================
+#        VIEW FUNCTIONS
+# =============================
+
 def home(request):
+    """Render the home page of the application."""
     return render(request, "search/index.html")
+
 
 @login_required(login_url='/accounts/login/')
 def search_filter(request):
+    """Display saved flight searches for the logged-in user."""
     saved_searches = SearchFilter.objects.filter(user=request.user).order_by('-created_at')
     return render(request, "search/flight_search.html", {
         'saved_searches': saved_searches
@@ -25,6 +29,7 @@ def search_filter(request):
 
 @login_required
 def get_saved_searches(request):
+    """Return all saved flight search filters for the logged-in user in JSON format."""
     searches = SearchFilter.objects.filter(user=request.user).order_by('-created_at')
     data = [
         {
@@ -42,15 +47,13 @@ def get_saved_searches(request):
     ]
     return JsonResponse(data, safe=False)
 
+
 @csrf_exempt
 @login_required
 def edit_search(request, search_id):
-    """
-    Edit saved search and return JSON response.
-    """
+    """Edit and update an existing saved flight search for the logged-in user."""
     search = get_object_or_404(SearchFilter, id=search_id, user=request.user)
     try:
-        # Parse JSON data from request body
         data = json.loads(request.body.decode('utf-8'))
         form = SearchFilterForm(data, instance=search)
         if form.is_valid():
@@ -76,9 +79,12 @@ def edit_search(request, search_id):
             }, status=400)
 
     except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data.'}, status=400)
+
+
 @login_required
 def search_cities(request):
+    """Search for city names using the GeoDB Cities API (RapidAPI)."""
     query = request.GET.get("q", "")
     if not query:
         return JsonResponse({"data": []})
@@ -92,19 +98,18 @@ def search_cities(request):
     res = requests.get(url, headers=headers, params=params)
 
     data = res.json().get("data", [])
-    # simplify data for frontend
     simplified = [
         {"id": city["id"], "name": city["city"], "country": city["country"]}
         for city in data
     ]
-
     return JsonResponse(simplified, safe=False)
+
 
 @login_required
 def save_filter(request):
+    """Save a new flight search filter to the user's account."""
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
-        # Save filter
         filter_obj = SearchFilter.objects.create(
             user=request.user,
             departure_city=data.get("departure_city"),
@@ -116,39 +121,34 @@ def save_filter(request):
             departure_date=data.get("departure_date"),
             return_date=data.get("return_date") or None
         )
-
         return JsonResponse({"message": "Filter saved successfully!", "id": filter_obj.id})
-    
+
     return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 @login_required
 def get_airports_by_city(request):
+    """Fetch a list of airports based on a given city using Booking.com API."""
     query = request.GET.get("city", "")
     if not query:
         return JsonResponse({"error": "Missing city parameter"}, status=400)
 
     url = "https://booking-com-api5.p.rapidapi.com/flight/find-airport"
-    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")  # store your key in .env
-
+    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")
     headers = {
         "x-rapidapi-key": api_key,
         "x-rapidapi-host": "booking-com-api5.p.rapidapi.com"
     }
     params = {"query": query, "languagecode": "en"}
-   
+
     response = requests.get(url, headers=headers, params=params)
-    
     if response.status_code == 200:
         data = response.json()
         airports_data = data.get("data", [])
         results = [
-                {
-                    "name": a.get("name"),
-                    "code": a.get("code")
-                }
-                for a in airports_data
-                if isinstance(a, dict)
-            ]
+            {"name": a.get("name"), "code": a.get("code")}
+            for a in airports_data if isinstance(a, dict)
+        ]
         return JsonResponse({"airports": results})
     else:
         return JsonResponse({"error": response.text}, status=500)
@@ -156,20 +156,30 @@ def get_airports_by_city(request):
 
 @login_required
 def search_flights(request):
-    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")  # store your key in .env
-
+    """Search available roundtrip flights between two airports using Booking.com API."""
+    api_key = os.getenv("BOOKINGRAPIDAPI_KEY")
     url = "https://booking-com-api5.p.rapidapi.com/flight/find-roundtrip"
 
-    # Get parameters from GET request
     dep_code = request.GET.get("dep")
     arr_code = request.GET.get("arr")
     dep_date = request.GET.get("dep_date")
-    return_date = request.GET.get("return_date")  # optional
+    return_date = request.GET.get("return_date")
     adults = request.GET.get("adults", 1)
-    children = request.GET.get("children", "")  # e.g., "4,12"
+    children = request.GET.get("children", "")
     cabin_class = request.GET.get("cabin_class", "ECONOMY")
 
-    querystring = {"languagecode":"en","children":"","cabin_class":"PREMIUM_ECONOMY","adults":"1","page":"1","depart":dep_date,"return":return_date,"from":dep_code,"to":arr_code,"currency":"GBP"}
+    querystring = {
+        "languagecode": "en",
+        "children": children,
+        "cabin_class": cabin_class,
+        "adults": adults,
+        "page": "1",
+        "depart": dep_date,
+        "return": return_date,
+        "from": dep_code,
+        "to": arr_code,
+        "currency": "GBP"
+    }
     headers = {
         "X-RapidAPI-Key": api_key,
         "X-RapidAPI-Host": "booking-com-api5.p.rapidapi.com"
@@ -177,23 +187,17 @@ def search_flights(request):
 
     try:
         response = requests.get(url, headers=headers, params=querystring)
-
-        # ✅ Handle Booking.com API error messages
         if response.status_code != 200:
             try:
                 data = response.json()
-                response.raise_for_status()
-                data = response.json()
-                return JsonResponse(data)  # return as JSON to frontend
+                return JsonResponse(data)
             except ValueError:
-                # Non-JSON response (like HTML error page)
                 return JsonResponse({
                     "success": False,
                     "code": response.status_code,
                     "message": response.text or "Invalid response from API"
                 }, status=response.status_code)
 
-        # ✅ Parse successful responses
         data = response.json()
         if not data.get("data"):
             return JsonResponse({
@@ -214,7 +218,10 @@ def search_flights(request):
             "message": str(e)
         }, status=500)
 
+
+@login_required
 def delete_search(request, search_id):
+    """Delete a saved flight search from the user's account."""
     if request.method == "DELETE":
         search = SearchFilter.objects.filter(id=search_id, user=request.user).first()
         if search:
@@ -227,6 +234,7 @@ def delete_search(request, search_id):
 
 @login_required
 def flight_search(request):
+    """Return flight search details for selected departure and arrival cities."""
     departure_city = request.GET.get("departure", "New York")
     arrival_city = request.GET.get("arrival", "London")
 
@@ -243,29 +251,30 @@ def flight_search(request):
     print(res)
     return JsonResponse(res)
 
+
 def contact_view(request):
+    """Handle the Contact Us form submission and display confirmation messages."""
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # You can save data to the database or send an email here
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             message = form.cleaned_data['message']
 
-            # Example: just show a success message
             messages.success(request, f"Thank you {name}! We’ll get back to you soon.")
             return redirect('contact')
     else:
         form = ContactForm()
-    
     return render(request, 'contact.html', {'form': form})
 
+
 def custom_404(request, exception):
-    """Custom 404 error page."""
+    """Render a custom 404 error page when a route is not found."""
     return render(request, "404.html", status=404)
 
 
 def get_exchange_rate(request):
+    """Fetch real-time currency exchange rate using the ExchangeRate API."""
     base = request.GET.get('base', 'USD')
     target = request.GET.get('target', 'GBP')
 
