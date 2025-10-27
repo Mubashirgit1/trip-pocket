@@ -972,7 +972,7 @@ To clone the repository:
 
 ## Testing
 
-Please refer to [TESTING.md](TESTING.md) file for all testing carried out.
+Please refer to [TESTING.md](/docs/testing.md) file for all testing carried out.
 
 ## 🧪 Automated and Manual Testing
 

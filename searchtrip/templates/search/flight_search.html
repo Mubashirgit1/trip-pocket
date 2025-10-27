@@ -315,7 +315,6 @@ if (data.data && data.data.flightOffers && data.data.flightOffers.length > 0) {
 async function convertToGBP(amount, base) {
   const res = await fetch(`/api/exchange-rate/?base=${base}`);
   const data = await res.json();
-  console.log(amount);
   if (data.rate) {
       const rate = data.rate;
      return amount * rate;
@@ -441,7 +440,7 @@ function updateSearch() {
       if (data.success) {
         loadSavedSearches(); // refresh sidebar
         alert('✅ Search updated successfully!');
-        toggleButton()
+        toggleButton();
          window.location.reload();
       } else {
         alert('❌ ' + data.message);
@@ -537,9 +536,9 @@ function loadSearchToForm(search) {
   document.getElementById("dep_Input").value = search.departureCity;
   document.getElementById("arr_Input").value = search.arrivalCity;
   document.getElementById("search_id").value = search.id;
-  depAirportSelect = document.getElementById("dep_airport");
+  const depAirportSelect = document.getElementById("dep_airport");
   depAirportSelect.innerHTML = '<option value="">-- Select Airport --</option>';
-  arrAirportSelect = document.getElementById("arr_airport");
+  const arrAirportSelect = document.getElementById("arr_airport");
   arrAirportSelect.innerHTML = '<option value="">-- Select Airport --</option>';
 // Append options and set selected
  console.log(search);
