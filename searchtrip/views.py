@@ -126,22 +126,21 @@ def save_filter(request):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 
-@login_required
 def get_airports_by_city(request):
     """Fetch a list of airports based on a given city using Booking.com API."""
     query = request.GET.get("city", "")
     if not query:
         return JsonResponse({"error": "Missing city parameter"}, status=400)
 
-    url = "https://booking-com-api5.p.rapidapi.com/flight/find-airport"
+    url = "https://booking-com15.p.rapidapi.com/api/v1/flights/searchDestination"
     api_key = os.getenv("BOOKINGRAPIDAPI_KEY")
     headers = {
-        "x-rapidapi-key": api_key,
-        "x-rapidapi-host": "booking-com-api5.p.rapidapi.com"
+	"x-rapidapi-key": api_key,
+	"x-rapidapi-host": "booking-com15.p.rapidapi.com"
     }
-    params = {"query": query, "languagecode": "en"}
+    querystring = {"query":query,}
 
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=querystring)
     if response.status_code == 200:
         data = response.json()
         airports_data = data.get("data", [])
@@ -154,11 +153,12 @@ def get_airports_by_city(request):
         return JsonResponse({"error": response.text}, status=500)
 
 
+
 @login_required
 def search_flights(request):
     """Search available roundtrip flights between two airports using Booking.com API."""
     api_key = os.getenv("BOOKINGRAPIDAPI_KEY")
-    url = "https://booking-com-api5.p.rapidapi.com/flight/find-roundtrip"
+    url = "https://booking-com15.p.rapidapi.com/api/v1/flights/searchFlights"
 
     dep_code = request.GET.get("dep")
     arr_code = request.GET.get("arr")
@@ -168,21 +168,24 @@ def search_flights(request):
     children = request.GET.get("children", "")
     cabin_class = request.GET.get("cabin_class", "ECONOMY")
 
+
     querystring = {
-        "languagecode": "en",
-        "children": children,
-        "cabin_class": cabin_class,
-        "adults": adults,
-        "page": "1",
-        "depart": dep_date,
-        "return": return_date,
-        "from": dep_code,
-        "to": arr_code,
-        "currency": "GBP"
+        "fromId":dep_code+".AIRPORT",
+        "toId":arr_code+".AIRPORT",
+        "departDate":dep_date,
+        "returnDate":return_date,
+        "stops":"none",
+        "pageNo":"1",
+        "adults":"1",
+        "children":"0,17",
+        "sort":"BEST",
+        "cabinClass":"ECONOMY",
+        "currency_code":"GBP"
     }
+
     headers = {
-        "X-RapidAPI-Key": api_key,
-        "X-RapidAPI-Host": "booking-com-api5.p.rapidapi.com"
+        "x-rapidapi-key": api_key,
+        "x-rapidapi-host": "booking-com15.p.rapidapi.com"
     }
 
     try:
